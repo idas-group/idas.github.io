@@ -270,7 +270,7 @@
       // Point this at whatever collects the addresses — your own /api/subscribe,
       // a Mailchimp/Buttondown/ConvertKit form URL, a Google Form, etc.
       // It is POSTed JSON: { "email": "..." }
-      const SIGNUP_ENDPOINT = "";
+      const SIGNUP_ENDPOINT = "https://formsubmit.co/ajax/operations@idas.group";;
 
       (function () {
         const form = document.getElementById("signup-form");
@@ -310,7 +310,8 @@
           try {
             const response = await fetch(SIGNUP_ENDPOINT, {
               method: "POST",
-              headers: { "Content-Type": "application/json" },
+              headers: { "Content-Type": "application/json", 
+                          "Accept": "application/json" },
               body: JSON.stringify({ email: email })
             });
 
