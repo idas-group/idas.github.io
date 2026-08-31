@@ -248,7 +248,7 @@
     </h1>
 
     <div class="signup">
-      <p class="signup__note" data-text="Subscribe to our newsletter">Subscribe to our newsletter</p>
+      <p class="signup__note" data-text="Subscribe for IDAS News + Events">Subscribe for IDAS News + Events</p>
       <form class="signup__form" id="signup-form" novalidate>
         <label class="visually-hidden" for="signup-email">Email address</label>
         <input
@@ -267,10 +267,8 @@
     </div>
 
     <script>
-      // Point this at whatever collects the addresses — your own /api/subscribe,
-      // a Mailchimp/Buttondown/ConvertKit form URL, a Google Form, etc.
-      // It is POSTed JSON: { "email": "..." }
-      const SIGNUP_ENDPOINT = "https://formsubmit.co/ajax/operations@idas.group";;
+
+      const SIGNUP_ENDPOINT = "https://formsubmit.co/ajax/7f38490dd81ad5d4639ce0f92aca1d43";;
 
       (function () {
         const form = document.getElementById("signup-form");
@@ -318,7 +316,7 @@
             if (!response.ok) throw new Error("Request failed: " + response.status);
 
             form.hidden = true;
-            setStatus("You're on the list.", "success");
+            setStatus("You've been added to the list :)", "success");
           } catch (error) {
             console.error(error);
             setStatus("Something went wrong. Try again.", "error");
