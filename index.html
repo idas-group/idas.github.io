@@ -108,19 +108,36 @@
 
       /* Glitch: two offset copies of the text, sliced into bands and jittered.
          Pointer devices only — there is no hover state to leave on touch. */
+      /* The two offset copies exist on every device — the hover query below
+         only gates the hover trigger, since the scroll trigger works on touch. */
+      .signup__note::before,
+      .signup__note::after {
+        content: attr(data-text);
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .signup__note::before { color: var(--accent); }
+      .signup__note::after  { color: #000; }
+
+      /* added by JS while the page is being scrolled */
+      .signup__note.is-glitching {
+        animation: glitch-shake 200ms steps(1, end) infinite;
+      }
+
+      .signup__note.is-glitching::before {
+        opacity: 1;
+        animation: glitch-slice-a 700ms steps(1, end) infinite;
+      }
+
+      .signup__note.is-glitching::after {
+        opacity: 1;
+        animation: glitch-slice-b 900ms steps(1, end) infinite;
+      }
+
       @media (hover: hover) {
-        .signup__note::before,
-        .signup__note::after {
-          content: attr(data-text);
-          position: absolute;
-          inset: 0;
-          opacity: 0;
-          pointer-events: none;
-        }
-
-        .signup__note::before { color: var(--accent); }
-        .signup__note::after  { color: #000; }
-
         .signup__note:hover {
           animation: glitch-shake 200ms steps(1, end) infinite;
         }
@@ -319,7 +336,10 @@
 
         .signup__note:hover,
         .signup__note:hover::before,
-        .signup__note:hover::after {
+        .signup__note:hover::after,
+        .signup__note.is-glitching,
+        .signup__note.is-glitching::before,
+        .signup__note.is-glitching::after {
           animation: none;
         }
         /* keep a static chromatic split so the hover still registers */
@@ -452,6 +472,34 @@
         input.addEventListener("input", function () {
           if (status.dataset.state === "error") setStatus("", "");
         });
+      })();
+    </script>
+
+    <script>
+      // Glitch the signup note while the page is being scrolled.
+      (function () {
+        const note = document.querySelector(".signup__note");
+        const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+        if (!note) return;
+
+        const SETTLE_MS = 140; // how long after the last scroll event it stops
+
+        let timer = null;
+
+        window.addEventListener("scroll", function () {
+          if (reduceMotion.matches) return;
+
+          if (timer === null) {
+            note.classList.add("is-glitching");
+          } else {
+            clearTimeout(timer);
+          }
+
+          timer = setTimeout(function () {
+            note.classList.remove("is-glitching");
+            timer = null;
+          }, SETTLE_MS);
+        }, { passive: true });
       })();
     </script>
 
