@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat — IDAS</title>
+    <style>
+      :root {
+        --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+        --accent: #E50000;
+        --rule: #000;
+        --muted: #767676;
+      }
+
+      * { box-sizing: border-box; }
+
+      html, body { height: 100%; }
+
+      body {
+        margin: 0;
+        background: #fff;
+        color: #000;
+        font-family: var(--mono);
+        font-size: 14px;
+        line-height: 1.5;
+        overscroll-behavior-y: none;
+      }
+
+      .room {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        height: 100svh;
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 20px 20px 16px;
+      }
+
+      /* ---------- header ---------- */
+
+      .room__head {
+        flex: 0 0 auto;
+        border-bottom: 2px solid var(--rule);
+        padding-bottom: 12px;
+      }
+
+      .room__bar {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .room__back {
+        font-size: 11px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        text-decoration: none;
+        color: #000;
+      }
+
+      .room__back:hover { color: var(--accent); }
+
+      .room__title {
+        margin: 0;
+        font-size: 11px;
+        font-weight: 400;
+        letter-spacing: 0.3em;
+        text-indent: 0.3em;
+        text-transform: uppercase;
+      }
+
+      .room__meta {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        margin-top: 10px;
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+      }
+
+      .room__state[data-state="live"]    { color: #000; }
+      .room__state[data-state="error"]   { color: var(--accent); }
+
+      /* ---------- gate ---------- */
+
+      .gate {
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 14px;
+      }
+
+      .gate[hidden], .live[hidden] { display: none; }
+
+      .gate__label {
+        font-size: 11px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .gate__note, .live__note {
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        margin: 0;
+        max-width: 46ch;
+      }
+
+      .gate__row { display: flex; gap: 8px; }
+
+      .field {
+        flex: 1 1 auto;
+        min-width: 0;
+        appearance: none;
+        border: 0;
+        border-bottom: 2px solid var(--rule);
+        border-radius: 0;
+        background: transparent;
+        padding: 8px 2px;
+        font: inherit;
+        font-size: 16px;
+        color: #000;
+      }
+
+      .field::placeholder { color: #999; }
+
+      .btn {
+        flex: 0 0 auto;
+        border: 3px solid #000;
+        border-radius: 0;
+        background: #000;
+        color: #fff;
+        padding: 8px 16px;
+        font: inherit;
+        font-size: 13px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: background 120ms linear, color 120ms linear;
+      }
+
+      .btn:hover:not(:disabled) { background: var(--accent); color: #000; }
+      .btn:disabled { opacity: 0.4; cursor: default; }
+
+      .field:focus-visible, .btn:focus-visible {
+        outline: 2px solid #000;
+        outline-offset: 3px;
+      }
+
+      .error {
+        min-height: 1.5em;
+        margin: 0;
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        color: var(--accent);
+      }
+
+      /* ---------- live room ---------- */
+
+      .live {
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
+
+      .log {
+        flex: 1 1 auto;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        padding: 14px 0;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .msg { margin: 0; overflow-wrap: anywhere; }
+
+      .msg__who {
+        font-weight: 700;
+        letter-spacing: 0.04em;
+      }
+
+      .msg--self .msg__who { color: var(--accent); }
+
+      .msg__time {
+        color: var(--muted);
+        font-size: 11px;
+        margin-right: 6px;
+      }
+
+      .msg--system {
+        color: var(--muted);
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .composer {
+        flex: 0 0 auto;
+        display: flex;
+        gap: 8px;
+        border-top: 2px solid var(--rule);
+        padding-top: 12px;
+      }
+
+      @media (max-width: 420px) {
+        .room { padding: 14px 14px 12px; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="room">
+      <header class="room__head">
+        <div class="room__bar">
+          <a class="room__back" href="/">&larr; IDAS</a>
+          <h1 class="room__title">Chat</h1>
+        </div>
+        <div class="room__meta">
+          <span class="room__state" id="state" data-state="idle">Un-connected</span>
+          <span id="headcount"></span>
+        </div>
+      </header>
+
+      <!-- Step 1: pick a name -->
+      <section class="gate" id="gate">
+        <label class="gate__label" for="username">Choose a name</label>
+        <div class="gate__row">
+          <input
+            class="field"
+            id="username"
+            type="text"
+            maxlength="20"
+            autocomplete="off"
+            autocapitalize="off"
+            spellcheck="false"
+            placeholder="citizen"
+          />
+          <button class="btn" id="enter" type="button">Enter</button>
+        </div>
+        <p class="error" id="gate-error"></p>
+        <p class="gate__note">
+          Connect with others... and remember, language has no memory.
+        </p>
+      </section>
+
+      <!-- Step 2: the room -->
+      <section class="live" id="live" hidden>
+        <div class="log" id="log" role="log" aria-live="polite" aria-label="Messages"></div>
+        <div class="composer">
+          <label class="visually-hidden" for="message" hidden>Message</label>
+          <input
+            class="field"
+            id="message"
+            type="text"
+            maxlength="500"
+            autocomplete="off"
+            placeholder="Say something"
+          />
+          <button class="btn" id="send" type="button">Send</button>
+        </div>
+      </section>
+    </main>
+
+    <script type="module">
+      import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+      // ---- config -------------------------------------------------------
+      // Supabase dashboard → Connect (or Settings → API Keys).
+      // The publishable key is safe to ship in client code; the secret key is NOT.
+      const SUPABASE_URL = "https://aqrkhbykjzerbqwruqcx.supabase.co";
+      const SUPABASE_KEY = "sb_publishable_ofKb7yrI3bsGaavAE7z2UQ_CuHuUth_";
+      const ROOM = "idas-lobby";
+
+      const SEND_INTERVAL_MS = 500;   // floor between sends, per client
+      const MAX_RENDERED = 200;       // trim the DOM, not a history limit
+
+      // ---- elements -----------------------------------------------------
+      const gate      = document.getElementById("gate");
+      const live      = document.getElementById("live");
+      const nameInput = document.getElementById("username");
+      const enterBtn  = document.getElementById("enter");
+      const gateError = document.getElementById("gate-error");
+      const log       = document.getElementById("log");
+      const msgInput  = document.getElementById("message");
+      const sendBtn   = document.getElementById("send");
+      const stateEl   = document.getElementById("state");
+      const headEl    = document.getElementById("headcount");
+
+      let channel = null;
+      let username = "";
+      let lastSentAt = 0;
+
+      // ---- rendering ----------------------------------------------------
+      // Everything user-supplied goes in via textContent. Never innerHTML here:
+      // that is the whole XSS surface of this page.
+
+      function atBottom() {
+        return log.scrollHeight - log.scrollTop - log.clientHeight < 40;
+      }
+
+      function append(node) {
+        const stick = atBottom();
+        log.appendChild(node);
+        while (log.children.length > MAX_RENDERED) log.removeChild(log.firstChild);
+        if (stick) log.scrollTop = log.scrollHeight;
+      }
+
+      function clockTime() {
+        return new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+      }
+
+      function addMessage(who, text, isSelf) {
+        const p = document.createElement("p");
+        p.className = "msg" + (isSelf ? " msg--self" : "");
+
+        const time = document.createElement("span");
+        time.className = "msg__time";
+        time.textContent = clockTime();
+
+        const name = document.createElement("span");
+        name.className = "msg__who";
+        name.textContent = who + ": ";
+
+        p.append(time, name, document.createTextNode(text));
+        append(p);
+      }
+
+      function addSystem(text) {
+        const p = document.createElement("p");
+        p.className = "msg msg--system";
+        p.textContent = text;
+        append(p);
+      }
+
+      function setState(text, state) {
+        stateEl.textContent = text;
+        stateEl.dataset.state = state;
+      }
+
+      // ---- join ---------------------------------------------------------
+
+      function cleanName(raw) {
+        // collapse whitespace, drop control characters
+        return raw.replace(/[\u0000-\u001F\u007F]/g, "").replace(/\s+/g, " ").trim();
+      }
+
+      async function join() {
+        const name = cleanName(nameInput.value);
+
+        if (name.length < 2) {
+          gateError.textContent = "Pick a name of at least 2 characters.";
+          nameInput.focus();
+          return;
+        }
+
+        if (!SUPABASE_URL || !SUPABASE_KEY) {
+          gateError.textContent = "Chat isn't connected yet.";
+          console.error("Set SUPABASE_URL and SUPABASE_KEY in chat.html.");
+          return;
+        }
+
+        username = name;
+        enterBtn.disabled = true;
+        gateError.textContent = "";
+        setState("Connecting…", "idle");
+
+        const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        channel = supabase.channel(ROOM, {
+          config: {
+            // self: false — our own messages are echoed locally on send instead,
+            // so they appear instantly and don't round-trip.
+            broadcast: { self: false },
+            presence: { key: crypto.randomUUID() }
+          }
+        });
+
+        channel.on("broadcast", { event: "msg" }, function (packet) {
+          const body = packet.payload || {};
+          if (typeof body.text !== "string" || typeof body.from !== "string") return;
+          addMessage(body.from.slice(0, 20), body.text.slice(0, 500), false);
+        });
+
+        channel.on("presence", { event: "sync" }, function () {
+          const count = Object.keys(channel.presenceState()).length;
+          headEl.textContent = count + (count === 1 ? " lurking" : " lurking");
+        });
+
+        channel.on("presence", { event: "join" }, function (e) {
+          e.newPresences.forEach(function (p) {
+            if (p.username && p.username !== username) addSystem(p.username + " joined");
+          });
+        });
+
+        channel.on("presence", { event: "leave" }, function (e) {
+          e.leftPresences.forEach(function (p) {
+            if (p.username) addSystem(p.username + " left");
+          });
+        });
+
+        channel.subscribe(async function (status) {
+          if (status === "SUBSCRIBED") {
+            await channel.track({ username: username });
+            gate.hidden = true;
+            live.hidden = false;
+            setState("Living", "living");
+            addSystem("You are " + username);
+            msgInput.focus();
+          } else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
+            setState("Connection failed", "error");
+            gateError.textContent = "Couldn't connect. Try again.";
+            enterBtn.disabled = false;
+          } else if (status === "CLOSED") {
+            setState("Disconnected", "error");
+          }
+        });
+      }
+
+      // ---- send ---------------------------------------------------------
+
+      function send() {
+        const text = msgInput.value.replace(/\s+/g, " ").trim();
+        if (!text || !channel) return;
+
+        const now = Date.now();
+        if (now - lastSentAt < SEND_INTERVAL_MS) return;
+        lastSentAt = now;
+
+        channel.send({
+          type: "broadcast",
+          event: "msg",
+          payload: { from: username, text: text.slice(0, 500) }
+        });
+
+        addMessage(username, text, true);
+        msgInput.value = "";
+        msgInput.focus();
+      }
+
+      // ---- wiring -------------------------------------------------------
+
+      enterBtn.addEventListener("click", join);
+      nameInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") join();
+      });
+      nameInput.addEventListener("input", function () { gateError.textContent = ""; });
+
+      sendBtn.addEventListener("click", send);
+      msgInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") send();
+      });
+
+      window.addEventListener("pagehide", function () {
+        if (channel) channel.unsubscribe();
+      });
+    </script>
+  </body>
+</html>
