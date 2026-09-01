@@ -73,8 +73,12 @@
       .marquee__item { padding-right: 3em; }
 
       @keyframes marquee-scroll {
-        from { transform: translateX(0); }
-        to   { transform: translateX(-50%); }
+        /* Six copies, so each is 16.667% of the track. Starting at
+           50vw - 33.333% puts the third copy's first letter dead centre;
+           the from/to distance is still exactly two copies, which is what
+           keeps the loop seamless and the speed unchanged. */
+        from { transform: translateX(calc(50vw - 33.333%)); }
+        to   { transform: translateX(calc(50vw - 66.667%)); }
       }
 
       .signup {
@@ -352,11 +356,13 @@
           <span class="marquee__item">Institute for the Design of Alternative Systems</span>
           <span class="marquee__item">Institute for the Design of Alternative Systems</span>
           <span class="marquee__item">Institute for the Design of Alternative Systems</span>
+          <span class="marquee__item">Institute for the Design of Alternative Systems</span>
+          <span class="marquee__item">Institute for the Design of Alternative Systems</span>
         </span>
       </h1>
 
       <div class="signup">
-        <p class="signup__note" data-text="Subscribe for IDAS News + Events">Subscribe for IDAS News + Events</p>
+        <p class="signup__note" data-text="Subscribe to IDAS News + Events">Subscribe to IDAS News + Events</p>
         <form class="signup__form" id="signup-form" novalidate>
           <label class="visually-hidden" for="signup-email">Email address</label>
           <input
