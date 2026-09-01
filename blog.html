@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog — IDAS</title>
+    <style>
+      :root {
+        --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+        /* swap to var(--mono) for an all-monospace site */
+        --body: Charter, "Bitstream Charter", "Iowan Old Style", Georgia, serif;
+        --accent: #E50000;
+        --rule: #000;
+        --muted: #767676;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        background: #fff;
+        color: #000;
+        font-family: var(--mono);
+        font-size: 14px;
+        line-height: 1.5;
+        overscroll-behavior-y: none;
+      }
+
+      .page {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 20px 20px 80px;
+      }
+
+      /* ---------- header (shared with chat.html) ---------- */
+
+      .page__head {
+        border-bottom: 2px solid var(--rule);
+        padding-bottom: 12px;
+      }
+
+      .page__bar {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .page__back {
+        font-size: 11px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        text-decoration: none;
+        color: #000;
+      }
+
+      .page__back:hover { color: var(--accent); }
+
+      .page__title {
+        margin: 0;
+        font-size: 11px;
+        font-weight: 400;
+        letter-spacing: 0.3em;
+        text-indent: 0.3em;
+        text-transform: uppercase;
+      }
+
+      .page__meta {
+        margin-top: 10px;
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+      }
+
+      /* ---------- index ---------- */
+
+      .works {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      .work {
+        border-bottom: 1px solid var(--rule);
+        padding: 28px 0;
+      }
+
+      .work__link {
+        display: block;
+        text-decoration: none;
+        color: #000;
+      }
+
+      .work__title {
+        margin: 0;
+        font-family: var(--body);
+        font-size: clamp(24px, 4.5vw, 34px);
+        font-weight: 600;
+        line-height: 1.15;
+        letter-spacing: -0.01em;
+      }
+
+      .work__link:hover .work__title { color: var(--accent); }
+
+      .work__dek {
+        margin: 8px 0 0;
+        font-family: var(--body);
+        font-size: 16px;
+        line-height: 1.4;
+        color: var(--muted);
+      }
+
+      .work__byline {
+        margin: 14px 0 0;
+        font-size: 11px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #000;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px 14px;
+      }
+
+      .work__byline span:not(:first-child) { color: var(--muted); }
+
+      .empty {
+        margin: 40px 0 0;
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      @media (max-width: 420px) {
+        .page { padding: 14px 14px 60px; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header class="page__head">
+        <div class="page__bar">
+          <a class="page__back" href="/">&larr; IDAS</a>
+          <h1 class="page__title">Blog</h1>
+        </div>
+        <p class="page__meta">Works from our members, updates, etc.</p>
+      </header>
+
+      <ul class="works">
+        <li class="work">
+          <a class="work__link" href="/blog/blog-post1.html">
+            <h2 class="work__title">All Queued Up / On Exo-History</h2>
+            <p class="work__dek">We&rsquo;ve lost control of ourselves.</p>
+            <p class="work__byline">
+              <span>santino</span>
+              <span><time datetime="2026-05-07">07 May 2026</time></span>
+              <span>Essay</span>
+            </p>
+          </a>
+        </li>
+
+        <!-- Template for the next entry — copy, fill, and put newest first.
+        <li class="work">
+          <a class="work__link" href="/blog/SLUG">
+            <h2 class="work__title">TITLE</h2>
+            <p class="work__dek">ONE-LINE SUMMARY</p>
+            <p class="work__byline">
+              <span>AUTHOR</span>
+              <span><time datetime="YYYY-MM-DD">DD MONTH YYYY</time></span>
+              <span>CATEGORY</span>
+            </p>
+          </a>
+        </li>
+        -->
+      </ul>
+    </main>
+  </body>
+</html>
