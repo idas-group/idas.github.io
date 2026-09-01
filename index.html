@@ -220,7 +220,6 @@
 
       .signup__status[data-state="error"] { color: #b00020; }
 
-      /* Nothing below the fold is discoverable without a hint. Delete freely. */
       .scroll-cue {
         position: absolute;
         bottom: 16px;
@@ -244,8 +243,11 @@
         position: relative;
         z-index: 2;
         box-sizing: border-box;
+        /* lvh, not svh: the panel has to be as tall as the viewport gets, or
+           there isn't enough scroll travel to push the hero fully off screen
+           once the URL bar retracts. */
         min-height: 100vh;
-        min-height: 100svh;
+        min-height: 100lvh;
         background: #fff;
         display: flex;
         align-items: center;
