@@ -15,18 +15,35 @@
         --accent: #E50000;
       }
 
-      body { margin: 0; }
+      body { margin: 0; background: #fff; }
 
-      /* The three.js renderer appends its canvas straight to <body>. */
-      canvas { display: block; }
+      /* The three.js renderer appends its canvas straight to <body>. Absolute
+         (not fixed) keeps it out of the document flow so the page can scroll,
+         while anchoring it to the top of the document so it scrolls away with
+         the hero instead of trailing the viewport. */
+      canvas {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 0;
+      }
+
+      /* One viewport tall, so the links below it start off screen.
+         dvh (not svh) keeps this matched to the canvas height on mobile. */
+      .hero {
+        position: relative;
+        z-index: 1;
+        height: 100vh;
+        height: 100dvh;
+      }
 
       .marquee {
-        position: fixed;
+        position: absolute;
         /* sit one gap above the symbol, not a fraction of the viewport */
         bottom: calc(50% + var(--symbol-radius) + var(--stack-gap));
         left: 0;
         width: 100%;
-        z-index: 1;
         margin: 0;
         overflow: hidden;
         font-family: var(--mono);
@@ -55,7 +72,7 @@
       }
 
       .signup {
-        position: fixed;
+        position: absolute;
         left: 50%;
         /* mirrors the ticker's gap; the min() keeps it on screen in short windows */
         top: min(
@@ -64,7 +81,6 @@
         );
         transform: translateX(-50%);
         width: min(420px, calc(100vw - 48px));
-        z-index: 1;
         font-family: var(--mono);
         color: #000;
       }
@@ -198,6 +214,82 @@
 
       .signup__status[data-state="error"] { color: #b00020; }
 
+      /* Nothing below the fold is discoverable without a hint. Delete freely. */
+      .scroll-cue {
+        position: absolute;
+        bottom: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.3em;
+        text-indent: 0.3em;
+        color: #000;
+        animation: scroll-cue-bob 2.4s ease-in-out infinite;
+      }
+
+      @keyframes scroll-cue-bob {
+        0%, 100% { transform: translate(-50%, 0); }
+        50%      { transform: translate(-50%, 5px); }
+      }
+
+      /* Opaque, so it wipes over the fixed canvas as it scrolls up */
+      .pages {
+        position: relative;
+        z-index: 2;
+        box-sizing: border-box;
+        min-height: 100vh;
+        min-height: 100dvh;
+        background: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 64px 24px;
+      }
+
+      .pages__list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: clamp(14px, 4vh, 30px);
+        text-align: center;
+      }
+
+      .pages__list.is-shuffling {
+        animation: pages-glitch 200ms steps(1, end) 1;
+      }
+
+      @keyframes pages-glitch {
+        0%   { transform: translateX(0);    opacity: 1; }
+        20%  { transform: translateX(-5px); opacity: 0.5; }
+        40%  { transform: translateX(6px);  opacity: 0.9; }
+        60%  { transform: translateX(-3px); opacity: 0.45; }
+        80%  { transform: translateX(3px);  opacity: 0.85; }
+        100% { transform: translateX(0);    opacity: 1; }
+      }
+
+      .pages__link {
+        display: inline-block;
+        font-family: var(--mono);
+        font-size: clamp(30px, 8vw, 56px);
+        letter-spacing: 0.2em;
+        /* offset the trailing letter-space so the word centres optically */
+        text-indent: 0.2em;
+        text-transform: uppercase;
+        text-decoration: none;
+        color: #000;
+        transition: color 120ms linear;
+      }
+
+      .pages__link:hover { color: var(--accent); }
+
+      .pages__link:focus-visible {
+        outline: 2px solid #000;
+        outline-offset: 6px;
+      }
+
       .visually-hidden {
         position: absolute;
         width: 1px; height: 1px;
@@ -210,6 +302,8 @@
       @media (prefers-reduced-motion: reduce) {
         .signup__button { transition: none; }
         .marquee__track { animation: none; }
+        .scroll-cue { animation: none; }
+        .pages__list.is-shuffling { animation: none; }
 
         .signup__note:hover,
         .signup__note:hover::before,
@@ -229,6 +323,11 @@
         }
       }
 
+      /* the cue would collide with the signup block once it hits its min() clamp */
+      @media (max-height: 720px) {
+        .scroll-cue { display: none; }
+      }
+
       @media (max-width: 420px) {
         .signup__form { flex-direction: column; }
       }
@@ -238,37 +337,49 @@
   <body>
     <div id="app"></div>
 
-    <h1 class="marquee" aria-label="Institute for the Design of Alternative Systems">
-      <span class="marquee__track" aria-hidden="true">
-        <span class="marquee__item">Institute for the Design of Alternative Systems</span>
-        <span class="marquee__item">Institute for the Design of Alternative Systems</span>
-        <span class="marquee__item">Institute for the Design of Alternative Systems</span>
-        <span class="marquee__item">Institute for the Design of Alternative Systems</span>
-      </span>
-    </h1>
+    <section class="hero">
+      <h1 class="marquee" aria-label="Institute for the Design of Alternative Systems">
+        <span class="marquee__track" aria-hidden="true">
+          <span class="marquee__item">Institute for the Design of Alternative Systems</span>
+          <span class="marquee__item">Institute for the Design of Alternative Systems</span>
+          <span class="marquee__item">Institute for the Design of Alternative Systems</span>
+          <span class="marquee__item">Institute for the Design of Alternative Systems</span>
+        </span>
+      </h1>
 
-    <div class="signup">
-      <p class="signup__note" data-text="Subscribe for IDAS News + Events">Subscribe for IDAS News + Events</p>
-      <form class="signup__form" id="signup-form" novalidate>
-        <label class="visually-hidden" for="signup-email">Email address</label>
-        <input
-          class="signup__input"
-          id="signup-email"
-          type="email"
-          name="email"
-          placeholder="[...]@[...].[...]" 
-          autocomplete="email"
-          spellcheck="false"
-          required
-        />
-        <button class="signup__button" id="signup-button" type="submit">Join</button>
-      </form>
-      <p class="signup__status" id="signup-status" role="status" aria-live="polite"></p>
-    </div>
+      <div class="signup">
+        <p class="signup__note" data-text="Subscribe for IDAS News + Events">Subscribe for IDAS News + Events</p>
+        <form class="signup__form" id="signup-form" novalidate>
+          <label class="visually-hidden" for="signup-email">Email address</label>
+          <input
+            class="signup__input"
+            id="signup-email"
+            type="email"
+            name="email"
+            placeholder="[...]@[...].[...]"
+            autocomplete="email"
+            spellcheck="false"
+            required
+          />
+          <button class="signup__button" id="signup-button" type="submit">Join</button>
+        </form>
+        <p class="signup__status" id="signup-status" role="status" aria-live="polite"></p>
+      </div>
+
+      <div class="scroll-cue" aria-hidden="true">↓</div>
+    </section>
+
+    <nav class="pages" aria-label="Pages">
+      <ul class="pages__list" id="pages-list">
+        <li><a class="pages__link" href="/about">About</a></li>
+        <li><a class="pages__link" href="/blog">Blog</a></li>
+        <li><a class="pages__link" href="/chat">Chat</a></li>
+      </ul>
+    </nav>
 
     <script>
 
-      const SIGNUP_ENDPOINT = "https://formsubmit.co/ajax/7f38490dd81ad5d4639ce0f92aca1d43";;
+      const SIGNUP_ENDPOINT = "https://formsubmit.co/ajax/7f38490dd81ad5d4639ce0f92aca1d43";
 
       (function () {
         const form = document.getElementById("signup-form");
@@ -308,7 +419,7 @@
           try {
             const response = await fetch(SIGNUP_ENDPOINT, {
               method: "POST",
-              headers: { "Content-Type": "application/json", 
+              headers: { "Content-Type": "application/json",
                           "Accept": "application/json" },
               body: JSON.stringify({ email: email })
             });
@@ -327,6 +438,67 @@
         input.addEventListener("input", function () {
           if (status.dataset.state === "error") setStatus("", "");
         });
+      })();
+    </script>
+
+    <script>
+      // Reshuffle the page links on an interval.
+      (function () {
+        const SHUFFLE_MS = 1000;
+
+        const list = document.getElementById("pages-list");
+        const items = Array.from(list.children);
+        const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+        function reorder() {
+          const next = items.slice();
+          const current = Array.from(list.children);
+
+          // Fisher-Yates, retried until the order actually changes
+          do {
+            for (let i = next.length - 1; i > 0; i--) {
+              const j = Math.floor(Math.random() * (i + 1));
+              [next[i], next[j]] = [next[j], next[i]];
+            }
+          } while (next.every(function (node, i) { return node === current[i]; }));
+
+          next.forEach(function (node) { list.appendChild(node); });
+
+          list.classList.remove("is-shuffling");
+          void list.offsetWidth; // restart the animation
+          list.classList.add("is-shuffling");
+        }
+
+        function shouldHold() {
+          // Don't move a link out from under a cursor, a finger, or the keyboard
+          // focus ring, and don't churn the order while nobody is looking.
+          return (
+            document.hidden ||
+            list.matches(":hover") ||
+            list.contains(document.activeElement)
+          );
+        }
+
+        let timer = null;
+
+        function start() {
+          if (timer !== null || reduceMotion.matches) return;
+          timer = setInterval(function () {
+            if (!shouldHold()) reorder();
+          }, SHUFFLE_MS);
+        }
+
+        function stop() {
+          if (timer === null) return;
+          clearInterval(timer);
+          timer = null;
+        }
+
+        reduceMotion.addEventListener("change", function () {
+          reduceMotion.matches ? stop() : start();
+        });
+
+        start();
       })();
     </script>
 
