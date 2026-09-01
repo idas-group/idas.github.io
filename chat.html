@@ -407,7 +407,7 @@
             await channel.track({ username: username });
             gate.hidden = true;
             live.hidden = false;
-            setState("Living", "living");
+            setState("Connected", "connected");
             addSystem("You are " + username);
             msgInput.focus();
           } else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
