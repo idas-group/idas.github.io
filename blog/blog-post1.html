@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Queued Up / On Exo-History — IDAS</title>
+    <meta name="description" content="We've lost control of ourselves.">
+    <meta name="author" content="santino">
+    <!-- Points search engines at the original printing. Keep this if the
+         Substack version stays up, so the two don't compete. -->
+    <link rel="canonical" href="https://pathomenon.substack.com/p/all-queued-up-on-exo-history">
+    <style>
+      :root {
+        --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+        /* swap to var(--mono) for an all-monospace site */
+        --body: Charter, "Bitstream Charter", "Iowan Old Style", Georgia, serif;
+        --accent: #E50000;
+        --rule: #000;
+        --muted: #767676;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        background: #fff;
+        color: #000;
+        font-family: var(--mono);
+        font-size: 14px;
+        line-height: 1.5;
+        overscroll-behavior-y: none;
+      }
+
+      .page {
+        max-width: 680px;
+        margin: 0 auto;
+        padding: 20px 20px 120px;
+      }
+
+      /* ---------- header (shared with blog.html / chat.html) ---------- */
+
+      .page__head {
+        border-bottom: 2px solid var(--rule);
+        padding-bottom: 12px;
+      }
+
+      .page__bar {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .page__back {
+        font-size: 11px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        text-decoration: none;
+        color: #000;
+      }
+
+      .page__back:hover { color: var(--accent); }
+
+      .page__title {
+        margin: 0;
+        font-size: 11px;
+        font-weight: 400;
+        letter-spacing: 0.3em;
+        text-indent: 0.3em;
+        text-transform: uppercase;
+      }
+
+      /* ---------- article furniture ---------- */
+
+      .post__head { padding: 40px 0 28px; border-bottom: 1px solid var(--rule); }
+
+      .post__title {
+        margin: 0;
+        font-family: var(--body);
+        font-size: clamp(30px, 6vw, 46px);
+        font-weight: 600;
+        line-height: 1.1;
+        letter-spacing: -0.015em;
+      }
+
+      .post__dek {
+        margin: 12px 0 0;
+        font-family: var(--body);
+        font-size: 18px;
+        line-height: 1.4;
+        color: var(--muted);
+      }
+
+      .post__byline {
+        margin: 22px 0 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px 14px;
+        font-size: 11px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .post__byline span:not(:first-child) { color: var(--muted); }
+
+      /* ---------- body ---------- */
+
+      .post__body {
+        font-family: var(--body);
+        font-size: 18px;
+        line-height: 1.65;
+        padding: 32px 0 0;
+      }
+
+      .post__body p { margin: 0 0 1.4em; }
+
+      .post__body em { font-style: italic; }
+
+      .post__body a {
+        color: #000;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 2px;
+      }
+
+      .post__body a:hover { color: var(--accent); }
+
+      .post__body blockquote {
+        margin: 0 0 1.4em;
+        padding-left: 20px;
+        border-left: 2px solid var(--rule);
+        font-style: italic;
+      }
+
+      .post__body figure { margin: 2em 0; }
+      .post__body img { display: block; width: 100%; height: auto; }
+
+      .post__body figcaption {
+        margin-top: 8px;
+        font-family: var(--mono);
+        font-size: 14px;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+      }
+
+      .post__thanks {
+        font-style: italic;
+        color: var(--muted);
+      }
+
+      /* ---------- footnotes ---------- */
+
+      /* the reference marker sitting in the prose */
+      .fnref {
+        font-family: var(--mono);
+        font-size: 0.62em;
+        font-style: normal;
+        vertical-align: super;
+        line-height: 0;
+        text-decoration: none;
+        padding: 0 1px;
+        color: var(--accent);
+      }
+
+      .fnref:hover { text-decoration: underline; }
+
+      .notes {
+        margin: 56px 0 0;
+        padding-top: 20px;
+        border-top: 2px solid var(--rule);
+      }
+
+      .notes__label {
+        margin: 0 0 20px;
+        font-size: 11px;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+      }
+
+      .notes ol {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        counter-reset: note;
+      }
+
+      .notes li {
+        counter-increment: note;
+        position: relative;
+        padding: 0 0 14px 34px;
+        font-family: var(--body);
+        font-size: 15px;
+        line-height: 1.5;
+        /* so the anchor doesn't land flush against the viewport edge */
+        scroll-margin-top: 20px;
+      }
+
+      .notes li::before {
+        content: counter(note);
+        position: absolute;
+        left: 0;
+        top: 0;
+        font-family: var(--mono);
+        font-size: 11px;
+        line-height: 1.9;
+        color: var(--muted);
+      }
+
+      .notes li:target::before { color: var(--accent); }
+
+      .notes a {
+        color: #000;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 2px;
+      }
+
+      .notes a:hover { color: var(--accent); }
+
+      /* jump back up to where you were reading */
+      .fnback {
+        font-family: var(--mono);
+        font-size: 12px;
+        text-decoration: none;
+        color: var(--muted);
+        margin-left: 6px;
+      }
+
+      .fnback:hover { color: var(--accent); }
+
+      .post__source {
+        margin: 48px 0 0;
+        padding-top: 20px;
+        border-top: 1px solid var(--rule);
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+      }
+
+      .post__source a { color: #000; }
+      .post__source a:hover { color: var(--accent); }
+
+      @media (max-width: 420px) {
+        .page { padding: 14px 14px 80px; }
+        .post__body { font-size: 17px; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header class="page__head">
+        <div class="page__bar">
+          <a class="page__back" href="/blog.html">&larr; Blog</a>
+          <h1 class="page__title">IDAS</h1>
+        </div>
+      </header>
+
+      <article>
+        <div class="post__head">
+          <h1 class="post__title">All Queued Up / On Exo-History</h1>
+          <p class="post__dek">We&rsquo;ve lost control of ourselves.</p>
+          <p class="post__byline">
+            <span>santino</span>
+            <span><time datetime="2026-05-07">07 May 2026</time></span>
+            <span>Essay</span>
+          </p>
+        </div>
+
+        <div class="post__body">
+
+          <p>
+          (First published in
+          <a href="https://pathomenon.substack.com/p/all-queued-up-on-exo-history">Collected Pathomena</a> on Substack)
+        </p>
+
+          <figure>
+            <blockquote>
+              <p>"We live in a strange time. Extraordinary events keep happening that undermine the stability of our world. Yet those in control seem unable to deal with it. Nobody has a vision of a different, or better, kind of future.”</p>
+            </blockquote>
+            <figcaption>
+              — Adam Curtis, HyperNormalization (2016)
+            </figcaption>
+          </figure>
+
+          <p>There’s a great behemoth lurking at the end of time. For eons it has laid dormant and patiently waited on our arrival. But at some point in our past we woke it up, and now it comes hurtling towards us from the future while we desperately scramble to prepare for our final visit. This thing has many names: the apocalypse, the singularity, climate collapse, nuclear holocaust. Eschatologies with different ends. Now, the true identity of this cosmological leviathan has begun to come into focus, and it goes by “Exo”.</p>
+
+          <p>I’ve been recently inspired by the perspectives of Marek Poliks and Roberto Alonso Trillo (P&T, who I had the pleasure of meeting on their recent visit to Yale) and their fantastically insightful, beautifully designed “EXOCAPITALISM: economies with absolutely no limits”<a class="fnref" id="fnref-1" href="#fn-1">1</a>. I was particularly captured by their conception of capitalism not as a socially constructed system but as a transcendent algorithm, a symbol-moving machine, an unfortunate set of rules, logic gone wild. This is not to say that capitalism is natural, it is decidedly opposed to nature<a class="fnref" id="fnref-2" href="#fn-2">2</a>. But instead that it constitutes a system <em>outside of us</em> (hence, “exo”). A pattern plucked from an outer heaven and trapped in our material reality, where it now runs amok<a class="fnref" id="fnref-3" href="#fn-3">3</a>. The key disposition of exocapitalism that separates it from the traditional view is as follows: exocapital doesn’t need us, it doesn’t want anything to do with us, it is allergic to all things real (manufacturing, materials, distribution, anything “on the ground”). Furthermore, it hates sales, it hates consumers, and it also wants to escape, badly. P&T conceptualize this pull away from all things dirty, grimy, and physical as “lift”: exocapital’s preference for more and more abstract modes of reproduction, deferred in time (”as a service”), and divorced from material reality. From hardware to software. From labor to compute. DTC to B2B SaaS<a class="fnref" id="fnref-4" href="#fn-4">4</a>. Money from more money. Derivatives on derivatives on derivatives on derivatives.</p>
+
+          <p>I found this dynamic to explain a lot of the strange phenomena emanating from the world of tech. Odd, explicitly anti-consumer decisions that baffle and elude explanation using any traditional model of economics<a class="fnref" id="fnref-5" href="#fn-5">5</a>. Alongside lift, P&T articulate “surface area” as the folds, wrinkles, and jagged edges that feed exocapital’s inclination to deterritorialize<a class="fnref" id="fnref-6" href="#fn-6">6</a> its substrate. Structured regulations, rules, and complications that provide interesting friction for industry to adapt to, rather than constrain its growth. All value is ultimately derived from this friction, the partial non-integration between economic spheres, and opportunities for arbitrage. <a href="https://www.eenews.net/articles/musk-made-a-fortune-on-climate-credits-trump-is-targeting-them/">Tesla’s reliance on the carbon credits economy</a> is a particularly illustrative instance of this. Finally, “drag”: the Kafkaesque, labyrinthian resistance force to lift that aims to boost the viscosity of a system, keeping capital in place before it inevitably seeps out to find bigger and better things. A “performance” of classic capital-consumer relations. New departments, programs, compliance targets, administrative hurdles, and other sticky forces. Drag is an attempt to slow the effects of lift’s liquidation by forcing adherence to rigid bureaucratized structures. The dynamics of lift, drag, and surface area intertwine and resonate with each other, pushing and pulling, melting and freezing – making living in the contemporary world feel really, really weird.</p>
+
+          <p>In this essay, I want to explore how these exo-dynamics interface with something we tend to care very much about: human history. While economies expand with absolutely no limits, our ability to make history ourselves becomes more and more restricted. History is now being made without us. Outside of us. Automatically. Exocapitalism shapes history in the background and, as it lifts away, its influence gets stronger and more opaque. Prediction markets are a prime example of this: a machine that abstracts, decentralizes, and commodifies the future. I will discuss them later on. But first, how does the market interface with history?</p>
+
+          <p>It is now far past cliche to point out that Fukuyama’s thesis - that neoliberal capitalism would usher in a global state of permanent harmonious liquid equilibrium and end history once and for all - did not materialize. History of both the hard (armed conflict, political revolutions, the “big event”) and soft (diaspora, the destruction/development of culture, the transmutation of narratives) variety continues to take place. So why does history continue to occur? Perhaps Fukuyama’s thesis should be presented in a different form: history hasn’t ended, but ours has. At least, the ability for us to meaningfully create history ourselves. History continues to automatically occur outside of us because the algorithmic seed giving rise to exocapital is more allergic to stasis than annihilation. The market craves jagged edges, surface area to cling to, and will readily consume its own limbs just to grow them back. Political instability, authoritarianism, and war (supported by defense tech, the glue that links and manages the relations between political entities) are all perfectly logical instances of the market’s need for deterritorialization - and human history is far from an exempt substrate. The market dictates warfare, genocide, the end of cultures, the destruction of artifacts, all without human will or intention. Conflicts are initiated by algorithmic forces while we scramble to construct explanatory ideological narratives. Furthermore, cultural development is now completely mediated by platforms – not in a <a href="https://www.theguardian.com/commentisfree/2025/nov/27/amazon-capitalist-era-free-markets-age-technofeudalism">Varoufakis-esque, technofeudalist sense</a> but in an organizational one. Spotify, XTheEverythingApp, TikTok, Netflix, etc. are the nodes in a network that shape, disperse, and manage discourse and its consequent sublimation into actual events. The movement of people is determined by market forces in a globalized, systematic manner. Economic ebbs and flows attract and repulse diaspora. The Palantirist big-data F3EAD<a class="fnref" id="fnref-7" href="#fn-7">7</a> state (both online and IRL) quickly identifies and nullifies potential insurgencies of thought and action from taking hold. Security, force, and control crystallize in the crater left behind by a lifted economy. What’s left are decaying artifacts, rotten links, ruins, and rapidly dissipating investment and infrastructure. The Reeks and Wrecks<a class="fnref" id="fnref-8" href="#fn-8">8</a>.</p>
+
+          <p>Neoliberalism touted a seamless global market that would be an equalizing force for the newly connected assemblage of national economies across the world. However, it is now clear that connection and communication are not inherently liberating. The linking of lands, people, and machines into a vast pulsating network organism necessarily subjects them to the overwhelming scale of its dynamics. The connective mesh of fiberoptic wires breathing beneath our feet forces us into direct contact with an indescribably ubiquitous bipolar entity. As a result, our daily lives are governed by mind-shatteringly abstract forces that briefly coalesce on our feeds like temperamental specters. We become utterly victim to Exo’s whims and become an unwilling participant in whatever history it decides to create. Mark Fisher linked this phenomenon to the <a href="https://www.youtube.com/watch?v=aCgkLICTskQ">“slow cancellation of the future”</a> and bemoaned our lost ability to envision or enact anything new. There is an absolutely paralyzing effect of capitalism on cultural production that masks itself with the spectacle of so-called technological progress. Exocapital constrains our will, it puts us on a track. Everything is queued up for us. This cultural paralysis now extends to the creation of the future, organized by a big casino in the cloud(s).</p>
+
+          <p>Prediction markets are not really about gambling. Rather, they serve to financialize history itself. Turning future events into discrete, dynamically evaluated assets with openly exchangeable potentialities integrated with the greater roaring, raging global marketplace. The creation of markets, of bets, of wagers – of what are essentially decentralized gig contracts – breathes life into a normatively implausible event, with massive incentives for anyone that can pull the right strings. Explicitly, when the position of a prediction market is in disequilibrium (above or below 50%), it becomes lucrative to force the unlikely outcome. This is, of course, weaponized insider trading – longstandingly utilized by blockchain assasination markets that have <a href="https://web.archive.org/web/20111028124035/http://www.cypherpunks.to/faq/cyphernomicron/chapter16.html">lurked in the shady corners of the internet for decades</a>. What’s new is that the assassination market has expanded in scope, scaled up, been made openly accessible, and <em>automated</em>. Polymarket and Kalshi are already flooded by bots, incentivized by these platforms to drive traffic and trading activity. The creation of new event markets can be fully mechanized, the system can learn to operationalize predictions that are likely to see the most activity, shaping history using the same attentional logic as your Insta feed.</p>
+
+          <p>The historical effects of prediction markets have already begun to show. <a href="https://www.justice.gov/opa/pr/us-soldier-charged-using-classified-information-profit-prediction-market-bets">Inexplicably lucky bets seem to precede major world occurrences</a>, politicians take strange and erratic actions right before certain markets close (<a href="https://finance.yahoo.com/news/white-house-briefing-fuels-insider-000428652.html">pivoting the outcome last-minute</a>), announcements and declarations <a href="https://www.nytimes.com/2026/03/20/technology/polymarket-social-feeds-falsehoods.html">themselves become profitable assets</a>. The existence of a market precedes its own enactment, literally financialized hyperstition<a class="fnref" id="fnref-9" href="#fn-9">9</a>. The nothing-ever-happens bots have to lose, and those with the right influence make bank<a class="fnref" id="fnref-10" href="#fn-10">10</a>. Number goes up: <a href="https://polymarket.com/event/joseph-aoun-out-as-president-of-lebanon-by-december-31">a politician is deposed</a>. Number goes down: <a href="https://polymarket.com/event/will-the-us-confirm-that-aliens-exist-before-2027">the government confirms that aliens do indeed exist</a>. You too can participate in a coup. The prediction market opens up a fissure in time, allowing vast exo-forces to flow in and deterritorialize future outcomes, giving algorithmic motivation to events that might otherwise have none, supplanting the traditional modes of historical motion. The apocalypse is an asset, the probability of future disaster is a commodity, and the friction between destroying the world and saving it generates infinite value. An arbitrage opportunity between now and later. As the <a href="https://www.businessinsider.com/trump-prediction-markets-world-casino-2026-4">big man himself recently articulated</a>: “the whole world, unfortunately, has become somewhat of a casino.” – and the house always wins.</p>
+
+          <figure>
+            <img src="/assets/blog/post1_pic1.png" alt="">
+          </figure>
+
+          <p>The historical drive of exocapital is a force that refuses to be controlled. This is potently clear when you look at the physical and spiritual state of those who have attempted to take the reins of the raging entity: the technocrats, the politicians, and even “the people”. The brutal rejection of characters within the Trump administration (failed to impose their will on the global economy), Elon Musk (completely ousted from politics), Sam Altman (AGI dreams crushed, forced to manage wrappers and integrations), and us (widespread cultural malaise) is all too evident. We are all left drug addled, panicked, pathetic, confused, and defeated by the forces of exocapital. Even those “in charge”, who ostensibly should have control, have none – lest they be violently rejected. They must instead resign to accept their subsistence on drips of profit and watch the machine ravage the world without them. There is nobody in control. Those who benefit from the system do so by stepping out of its way and taking their cut. Even worse, these “last men” often become symbolic hype-drivers, announcement fodder, human volatility for the system — mascots. Exocapitalism destroys the potential for “great people” of history, leaving a modicum of power to the most sycophantic, spineless, sold-out, and empty vessels among us. Driven less by greed and more by a resignation, exocapitalism rewards giving up what it means to be human – an IPO of the soul.</p>
+
+          <p>So how do we take back the reins of history? I have no real optimistic prescriptions here<a class="fnref" id="fnref-11" href="#fn-11">11</a>. Even waiting around for the thing to lift away won’t work. Exo isn’t finished with us and may not be for a long time. P&T are very right to say that exocapitalism wants absolutely nothing to do with us. We are slow, meaty, dirty, and particularly drag-y (that is, stubborn). It’s enough to make any transcendent algorithm sick. But, unfortunately for exocapital, we are so, so very delicious. The human brain is a near-perfect substrate for the flows and fluxes of deterritorializing market forces. A mouth-watering, complexity-generating, just-nearly-stochastic machine that is uniquely adept at transiently relating a vast network of abstract elements, imposing semi-structure and partial coherence. A dense, nutrient-rich thicket of symbolic relations for exocapitalism to gorge itself on. Pure surface area. Exo may be attracted to the speeds and abstractive levels afforded to it by digital systems, but humans are such good content. We see this manifest in the fast, personalized, responsive distillation of our psyche into digital forms. The mind becomes the perfect frontier for speculation. Computers just aren’t that interesting (yet). Our frivolous desires, events, and movements might prove to be irresistible, providing us a tether – an anxious-avoidant attachment to the rapidly departing cosmic entity. It is very possible that Exo needs a last mile, a termination point, to maintain its form. If it were to find a truly frictionless substrate, it would collapse to a singular time-invariant coordinate and cease to possess dynamic properties whatsoever. Exo may forever need a foothold in meatworld. Lucky us.</p>
+
+          <p class="post__thanks">Special thanks to Nathan Davis and Joseph Iannone for wading through this and giving me some good, honest critique.</p>
+        </div>
+
+        <section class="notes">
+          <h2 class="notes__label">Notes</h2>
+          <ol>
+            <li id="fn-1">
+Check out <a href="http://(https//www.youtube.com/watch?v=144afKgO5Eg)">their lecture on lift</a>for a good introduction to their work, “how to make something out of nothing”, and of course, <a href="https://becoming.press/exocapitalism">buy their book</a>. I am so exo-pilled.<a class="fnback" href="#fnref-1" aria-label="Back to reference 1">&uarr;</a></li>
+            <li id="fn-2">Nature itself is governed by transcendent, ontological properties. Perhaps antagonistic to the kernel that runs exocapitalism.<a class="fnback" href="#fnref-2" aria-label="Back to reference 2">&uarr;</a></li>
+            <li id="fn-3">Humans are demiurgic in this way. We breathe spirit into the immaterial and imbue it with purpose. We conjure up systems, algorithms, and dynamics, and give them life on Earth. This is technology. The market is a machine that runs machines for eternity. Did we summon capitalism with intention, or did it possess us and force its way into our world? See: The <a href="https://cityofplay.substack.com/">cybermysticism of SEELE</a>, the divine realm of patterns, and the ritualistic practice of technological development.<a class="fnback" href="#fnref-3" aria-label="Back to reference 3">&uarr;</a></li>
+            <li id="fn-4">DTC = direct-to-consumer, B2B = business-to-business, SaaS = software as a service.<a class="fnback" href="#fnref-4" aria-label="Back to reference 4">&uarr;</a></li>
+            <li id="fn-5">Check out ads from 3rd party integrations and AI wrappers. Such as the billboards in SF or postings in the NYC and DC subways. Who are they for? Advertisements are no longer created to drive sales, but only to maintain some level of narrative existence by driving up spending and reach metrics. Probably some creative KPI work going on there.<a class="fnback" href="#fnref-5" aria-label="Back to reference 5">&uarr;</a></li>
+            <li id="fn-6">P&T draw a lot from D&G, so I think it’s right to borrow some anti-Oedipus terminology. Deterritorialization as the liquidation of social, cultural, and psychic structures. “All that is solid melts into air”-core.<a class="fnback" href="#fnref-6" aria-label="Back to reference 6">&uarr;</a></li>
+            <li id="fn-7">
+Special Ops methodology: Find, fix, finish, exploit, analyze, disseminate. Used to justify indiscriminate executions.<a class="fnback" href="#fnref-7" aria-label="Back to reference 7">&uarr;</a></li>
+            <li id="fn-8">
+Kurt Vonnegut’s debut novel “Player Piano” (published in 1952) details a world that is fully automated by machines. Only a small population of engineers and managers are employed. The Reeks and Wrecks (“Reconstruction and Reclamation Corps.”, the permanent underclass) spend their time either doing meaningless manual labor to instill a sense of purpose or marinating in a drunken stupor at any one of the local bars.<a class="fnback" href="#fnref-8" aria-label="Back to reference 8">&uarr;</a></li>
+            <li id="fn-9">Ideas that <a href="https://www.orphandriftarchive.com/articles/hyperstition/">realize themselves through their own existence</a>.<a class="fnback" href="#fnref-9" aria-label="Back to reference 9">&uarr;</a></li>
+            <li id="fn-10">
+Even media events (derivatives on reality) have begun to leak into the prediction market space (“<a href="https://polymarket.com/event/who-will-die-in-euphoria-season-3">who will die in Season 3 of Euphoria?</a>”) – such pure lift.<a class="fnback" href="#fnref-10" aria-label="Back to reference 10">&uarr;</a></li>
+            <li id="fn-11">P&T have tossed around a return to a pre-lingual world. The best I can say is perhaps we have to party in the crater. There is a genuine, positive, joy and liberation that comes when Exocaptial lifts away from somewhere. When it’s busy with other things. A brief reprieve, a breath of fresh air. Raving in the eddy currents. The euphoria that comes from human recolonization of an area left behind. The temporary re-instantiation of human social relations as the dominant system. Enjoying it while we can. Maybe a good life can be found here and there. Maybe we can make history in the margins?<a class="fnback" href="#fnref-11" aria-label="Back to reference 11">&uarr;</a></li>
+          </ol>
+        </section>
+
+        <p class="post__source">
+          First published in
+          <a href="https://pathomenon.substack.com/p/all-queued-up-on-exo-history">Collected Pathomena</a>,
+          7 May 2026.
+        </p>
+      </article>
+    </main>
+  </body>
+</html>
