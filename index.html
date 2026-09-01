@@ -15,7 +15,12 @@
         --accent: #E50000;
       }
 
-      body { margin: 0; background: #fff; }
+      body {
+        margin: 0;
+        background: #fff;
+        /* stops Chrome's pull-to-refresh from grabbing upward drags at the top */
+        overscroll-behavior-y: none;
+      }
 
       /* The three.js renderer appends its canvas straight to <body>. Absolute
          (not fixed) keeps it out of the document flow so the page can scroll,
@@ -30,12 +35,13 @@
       }
 
       /* One viewport tall, so the links below it start off screen.
-         dvh (not svh) keeps this matched to the canvas height on mobile. */
+         svh (not dvh) is a constant — dvh tracks the mobile URL bar as it
+         collapses, resizing the page mid-scroll and jerking the scroll offset. */
       .hero {
         position: relative;
         z-index: 1;
         height: 100vh;
-        height: 100dvh;
+        height: 100svh;
       }
 
       .marquee {
@@ -221,7 +227,7 @@
         left: 50%;
         transform: translateX(-50%);
         font-family: var(--mono);
-        font-size: 11px;
+        font-size: 24px;
         letter-spacing: 0.3em;
         text-indent: 0.3em;
         color: #000;
@@ -239,7 +245,7 @@
         z-index: 2;
         box-sizing: border-box;
         min-height: 100vh;
-        min-height: 100dvh;
+        min-height: 100svh;
         background: #fff;
         display: flex;
         align-items: center;
