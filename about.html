@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About — IDAS</title>
+    <style>
+      :root {
+        --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+        /* the landing page is monospace throughout, so this page is too.
+           point this at a serif stack if you ever want prose to diverge. */
+        --body: var(--mono);
+        --accent: #E50000;
+        --rule: #000;
+        --muted: #767676;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        background: #fff;
+        color: #000;
+        font-family: var(--mono);
+        font-size: 14px;
+        line-height: 1.5;
+        overscroll-behavior-y: none;
+      }
+
+      .page {
+        /* ~62 characters at the prose size — monospace sets wider than a serif
+           at the same point size, so the measure comes in tighter than 680px */
+        max-width: 620px;
+        margin: 0 auto;
+        padding: 24px 24px 120px;
+      }
+
+      /* ---------- header (shared with blog.html / chat.html) ---------- */
+
+      .page__head {
+        border-bottom: 2px solid var(--rule);
+        padding-bottom: 12px;
+      }
+
+      .page__bar {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .page__back {
+        font-size: 11px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        text-decoration: none;
+        color: #000;
+      }
+
+      .page__back:hover { color: var(--accent); }
+
+      .page__title {
+        margin: 0;
+        font-size: 11px;
+        font-weight: 400;
+        letter-spacing: 0.3em;
+        text-indent: 0.3em;
+        text-transform: uppercase;
+      }
+
+      .page__meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 16px;
+        margin-top: 10px;
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+      }
+
+      /* lets a reader stop the text moving while they read it */
+      .pause {
+        border: 0;
+        background: none;
+        padding: 0;
+        font: inherit;
+        font-size: 11px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+        cursor: pointer;
+      }
+
+      .pause:hover { color: var(--accent); }
+
+      .pause[aria-pressed="true"] { color: #000; }
+
+      .pause:focus-visible {
+        outline: 2px solid #000;
+        outline-offset: 3px;
+      }
+
+      /* ---------- prose ---------- */
+
+      .prose {
+        font-family: var(--body);
+        /* between the landing page's 13px signup note and its 22–28px marquee,
+           so the two pages read as one typographic family */
+        font-size: clamp(15px, 1.5vw, 17px);
+        line-height: 1.8;
+        /* a trace of the tracking used across the landing page — far short of
+           the marquee's 0.3em, which prose could not carry */
+        letter-spacing: 0.02em;
+        padding: 64px 0 0;
+      }
+
+      .prose p {
+        margin: 0 0 2em;
+        text-wrap: pretty;
+      }
+
+      .prose p:last-child { margin-bottom: 0; }
+
+      .prose a {
+        color: #000;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 3px;
+      }
+
+      .prose a:hover { color: var(--accent); }
+
+      /* ---------- swapping words ---------- */
+
+      .swap {
+        /* width is set per word in JS and transitioned, so the line visibly
+           expands and contracts as the text changes under it */
+        display: inline-block;
+        text-align: center;
+        white-space: nowrap;
+        color: var(--accent);
+        transition: width 220ms cubic-bezier(0.2, 0, 0, 1);
+      }
+
+      .swap.is-flipping {
+        animation: swap-glitch 140ms steps(1, end) 1;
+      }
+
+      /* displacement only — the word stays fully opaque through the swap */
+      @keyframes swap-glitch {
+        0%   { transform: translateX(0); }
+        25%  { transform: translateX(-2px); }
+        50%  { transform: translateX(2px); }
+        75%  { transform: translateX(-1px); }
+        100% { transform: translateX(0); }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .swap { transition: none; }
+        .swap.is-flipping { animation: none; }
+      }
+
+      @media (max-width: 420px) {
+        .page { padding: 16px 16px 72px; }
+        .prose { padding-top: 44px; line-height: 1.75; }
+        .prose p { margin-bottom: 1.8em; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header class="page__head">
+        <div class="page__bar">
+          <a class="page__back" href="/">&larr; IDAS</a>
+          <h1 class="page__title">About</h1>
+        </div>
+        <div class="page__meta">
+          <span>Institute for the Design of Alternative Systems</span>
+          <button class="pause" id="pause" type="button" aria-pressed="false">Pause</button>
+        </div>
+      </header>
+
+      <!-- Anything inside [data-swap] gets scanned against the dictionary.
+           Write plain prose — no special markup on individual words. -->
+      <div class="prose" data-swap>
+        <p>
+          We are living in strange times.
+        </p>
+
+        <p>
+          Our elites have lost control of the systems that govern us.
+        </p>
+
+        <p>
+          They have no real vision of the future.
+        </p>
+
+        <p>
+          We made this world once, we can make it again.
+        </p>
+
+        <p>
+          The Institute for the Design of Alternative Systems (IDAS) is a
+          hyperdiciplinary collective based in New Haven, CT.
+        </p>
+
+        <p>
+          We aim to critique, create, and implement new social systems for the
+          coming age.
+        </p>
+
+        <p>
+          Interested? Join our <a href="index.html">mailing list</a> and check
+          out our <a href="blog.html">blog</a> to learn more.
+        </p>
+
+      </div>
+    </main>
+
+    <script>
+      // ---- dictionary ---------------------------------------------------
+      // key = the word (or phrase) as written in the prose above
+      // value = its alternatives. The original stays in the rotation.
+
+      const SYNONYMS = {
+        /* "hyperdiciplinary": ["multidimensional", "hypergeometrical"], */
+        "collective": ["organization", "group"],
+        "strange": ["weird", "odd"],
+        "vision of": ["plan for"],
+        "govern": ["guide", "manage", "direct"],
+        "again": ["again and again"],
+        "social": ["cultural", "political", "digital"],
+        "critique": ["analyze"],
+        "create": ["devise"],
+        "implement": ["enact"],
+        "interested": ["curious"]
+      };
+
+      const INTERVAL_MS = 6000;     // same for every word, by design
+      const JITTER_MS = 120;        // small random nudge on top of each offset
+      const START_DELAY_MS = 5000;  // hold the original wording on arrival
+
+      (function () {
+        const roots = document.querySelectorAll("[data-swap]");
+        const pauseBtn = document.getElementById("pause");
+        const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+        const keys = Object.keys(SYNONYMS);
+        if (!roots.length || !keys.length) return;
+
+        // ---- find the words ---------------------------------------------
+
+        function escapeRe(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
+
+        const pattern = new RegExp(
+          "\\b(" + keys.map(escapeRe).join("|") + ")\\b",
+          "gi"
+        );
+
+        function matchCase(sample, word) {
+          // if the word in the prose was capitalised, capitalise its swaps too
+          if (sample[0] !== sample[0].toUpperCase()) return word;
+          return word[0].toUpperCase() + word.slice(1);
+        }
+
+        const slots = [];
+
+        roots.forEach(function (root) {
+          // collect first, mutate second — editing during the walk skips nodes
+          const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+          const texts = [];
+          let node;
+          while ((node = walker.nextNode())) {
+            if (pattern.test(node.nodeValue)) texts.push(node);
+            pattern.lastIndex = 0;
+          }
+
+          texts.forEach(function (textNode) {
+            const frag = document.createDocumentFragment();
+            const source = textNode.nodeValue;
+            let cursor = 0;
+            let m;
+
+            pattern.lastIndex = 0;
+            while ((m = pattern.exec(source)) !== null) {
+              const found = m[0];
+              const key = keys.find(function (k) {
+                return k.toLowerCase() === found.toLowerCase();
+              });
+
+              frag.appendChild(
+                document.createTextNode(source.slice(cursor, m.index))
+              );
+
+              const span = document.createElement("span");
+              span.className = "swap";
+              span.textContent = found;
+              frag.appendChild(span);
+
+              slots.push({
+                el: span,
+                options: [found].concat(
+                  SYNONYMS[key].map(function (w) { return matchCase(found, w); })
+                ),
+                index: 0
+              });
+
+              cursor = m.index + found.length;
+            }
+
+            frag.appendChild(document.createTextNode(source.slice(cursor)));
+            textNode.parentNode.replaceChild(frag, textNode);
+          });
+        });
+
+        if (!slots.length) return;
+
+        // ---- measure every option ----------------------------------------
+        // Widths are taken once, up front, in a single read pass. Measuring at
+        // swap time would force a layout on every tick.
+
+        const ruler = document.createElement("span");
+        ruler.style.cssText =
+          "position:absolute;visibility:hidden;white-space:pre;left:-9999px;top:0";
+        document.body.appendChild(ruler);
+
+        slots.forEach(function (slot) {
+          const style = getComputedStyle(slot.el);
+          ruler.style.font = style.font;
+          ruler.style.letterSpacing = style.letterSpacing;
+
+          slot.widths = slot.options.map(function (word) {
+            ruler.textContent = word;
+            return Math.ceil(ruler.getBoundingClientRect().width);
+          });
+
+          slot.el.style.width = slot.widths[slot.index] + "px";
+        });
+
+        ruler.remove();
+
+        // ---- rotate ------------------------------------------------------
+
+        let paused = false;
+
+        function flip(slot) {
+          if (paused || reduceMotion.matches) return;
+
+          // pick any option other than the one showing
+          let next = slot.index;
+          while (next === slot.index) {
+            next = Math.floor(Math.random() * slot.options.length);
+          }
+          slot.index = next;
+          slot.el.textContent = slot.options[next];
+          slot.el.style.width = slot.widths[next] + "px";
+
+          slot.el.classList.remove("is-flipping");
+          void slot.el.offsetWidth; // restart the animation
+          slot.el.classList.add("is-flipping");
+        }
+
+        // Every word shares INTERVAL_MS. Only the phase differs: the interval
+        // is cut into one evenly spaced slot per word, and the slots are dealt
+        // out in a shuffled order — assigning them in document order makes the
+        // swaps sweep down the page like a wave.
+        const phases = slots.map(function (_, i) {
+          return (INTERVAL_MS / slots.length) * i;
+        });
+
+        for (let i = phases.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [phases[i], phases[j]] = [phases[j], phases[i]];
+        }
+
+        // START_DELAY_MS is added on top of every phase, so the whole set is
+        // pushed back intact — the first swap lands at 5s, not 5s + a full
+        // interval, and the stagger between words is unchanged.
+        slots.forEach(function (slot, i) {
+          const offset = START_DELAY_MS + phases[i] + Math.random() * JITTER_MS;
+
+          setTimeout(function () {
+            flip(slot);
+            setInterval(function () { flip(slot); }, INTERVAL_MS);
+          }, offset);
+        });
+
+        // ---- pause control -----------------------------------------------
+
+        pauseBtn.addEventListener("click", function () {
+          paused = !paused;
+          pauseBtn.setAttribute("aria-pressed", String(paused));
+          pauseBtn.textContent = paused ? "Unpause" : "Pause";
+        });
+      })();
+    </script>
+  </body>
+</html>
