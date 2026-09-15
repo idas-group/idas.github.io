@@ -13,6 +13,7 @@
         --accent: #E50000;
         --rule: #000;
         --muted: #767676;
+        --stagger: 1000ms;
       }
 
       * { box-sizing: border-box; }
@@ -118,6 +119,15 @@
       .prose p {
         margin: 0 0 2em;
         text-wrap: pretty;
+        /* --i is the paragraph's index, set in JS so any number of
+           paragraphs stagger without touching the CSS */
+        animation: pop-in 240ms cubic-bezier(0.2, 0, 0, 1) both;
+        animation-delay: calc(var(--i, 0) * var(--stagger));
+      }
+
+      @keyframes pop-in {
+        from { opacity: 0; transform: translateY(8px); }
+        to   { opacity: 1; transform: translateY(0); }
       }
 
       .prose p:last-child { margin-bottom: 0; }
@@ -156,6 +166,7 @@
       }
 
       @media (prefers-reduced-motion: reduce) {
+        .prose p { animation: none; }
         .swap { transition: none; }
         .swap.is-flipping { animation: none; }
       }
@@ -218,6 +229,16 @@
     </main>
 
     <script>
+      // Stagger the paragraphs in on load. The delay lives in CSS
+      // (--stagger); this only hands each paragraph its position.
+      (function () {
+        document.querySelectorAll(".prose p").forEach(function (p, i) {
+          p.style.setProperty("--i", i);
+        });
+      })();
+    </script>
+
+    <script>
       // ---- dictionary ---------------------------------------------------
       // key = the word (or phrase) as written in the prose above
       // value = its alternatives. The original stays in the rotation.
@@ -238,7 +259,7 @@
 
       const INTERVAL_MS = 6000;     // same for every word, by design
       const JITTER_MS = 120;        // small random nudge on top of each offset
-      const START_DELAY_MS = 5000;  // hold the original wording on arrival
+      const START_DELAY_MS = 7500;  // hold the original wording on arrival
 
       (function () {
         const roots = document.querySelectorAll("[data-swap]");
